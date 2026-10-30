@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI XAUUSD Analysis</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080b12;color:#fff;font-family:Arial,sans-serif;padding:18px}
+.container{max-width:900px;margin:auto}
+h1{color:#56e6ff;text-align:center}
+.card{background:#111827;border:1px solid #26364a;border-radius:14px;padding:18px;margin:14px 0}
+select,button{padding:12px;border-radius:8px;border:1px solid #34445c;background:#0b1220;color:white;width:100%;margin-top:8px}
+button{background:#087e9e;font-weight:bold;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.label{color:#9caec5;font-size:13px}
+.value{font-size:22px;font-weight:bold;margin-top:8px}
+.green{color:#39e69a}.red{color:#ff647c}.blue{color:#56e6ff}
+small{color:#9caec5;line-height:1.6}
+#chart{height:500px}
+@media(max-width:550px){.grid{grid-template-columns:1fr}#chart{height:400px}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>AI XAUUSD ANALYSIS</h1>
+
+<div class="card">
+<div class="label">PILIH TIMEFRAME</div>
+<select id="tf" onchange="changeTF()">
+<option value="1">M1</option>
+<option value="5">M5</option>
+<option value="15" selected>M15</option>
+<option value="30">M30</option>
+<option value="60">H1</option>
+<option value="240">H4</option>
+<option value="D">D1</option>
+<option value="W">W1</option>
+<option value="M">MN1</option>
+</select>
+<div id="chart"></div>
+</div>
+
+<div class="card">
+<h3>AI SIGNAL</h3>
+<div class="grid">
+<div><div class="label">ARAHAN</div><div class="value blue" id="signal">MENUNGGU DATA</div></div>
+<div><div class="label">AI PROBABILITY</div><div class="value blue" id="prob">--</div></div>
+<div><div class="label">BULLISH WIN RATE</div><div class="value green" id="bull">--</div></div>
+<div><div class="label">BEARISH WIN RATE</div><div class="value red" id="bear">--</div></div>
+</div>
+</div>
+
+<div class="card">
+<h3>DATA TRADINGVIEW AI</h3>
+<div class="label">Keputusan daripada Pine Script perlu dihantar melalui webhook ke API website.</div>
+<input id="api" placeholder="Masukkan URL API anda"
+style="width:100%;padding:12px;margin-top:10px;background:#0b1220;color:white;border:1px solid #34445c;border-radius:8px">
+<button onclick="loadAI()">DAPATKAN ANALISIS AI</button>
+<p id="status"><small>Belum disambungkan kepada AI TradingView.</small></p>
+</div>
+
+<p><small>Nota: Carta TradingView dipaparkan berasingan daripada data AI. Nilai AI hanya akan muncul apabila API menerima data sebenar daripada indikator Pine Script. Jangan masukkan API key rahsia di laman awam.</small></p>
+</div>
+
+<script>
+function changeTF(){
+ const tf=document.getElementById("tf").value;
+ const map={"1":"1","5":"5","15":"15","30":"30","60":"60","240":"240","D":"D","W":"W","M":"M"};
+ document.getElementById("chart").innerHTML="";
+ new TradingView.widget({
+   autosize:true,
+   symbol:"OANDA:XAUUSD",
+   interval:map[tf],
+   timezone:"Asia/Kuala_Lumpur",
+   theme:"dark",
+   style:"1",
+   locale:"ms",
+   enable_publishing:false,
+   hide_top_toolbar:false,
+   allow_symbol_change:true,
+   container_id:"chart"
+ });
+}
+function loadAI(){
+ const url=document.getElementById("api").value.trim();
+ const status=document.getElementById("status");
+ if(!url){status.textContent="Masukkan URL API webhook/backend dahulu.";return;}
+ status.textContent="Sedang mendapatkan data AI...";
+ fetch(url)
+ .then(r=>{if(!r.ok)throw Error("API tidak berjaya");return r.json();})
+ .then(d=>{
+   document.getElementById("signal").textContent=d.signal??"TIADA DATA";
+   document.getElementById("prob").textContent=d.probability!=null?d.probability+"%":"--";
+   document.getElementById("bull").textContent=d.bull_win_rate!=null?d.bull_win_rate+"%":"--";
+   document.getElementById("bear").textContent=d.bear_win_rate!=null?d.bear_win_rate+"%":"--";
+   status.textContent="Data diterima daripada API.";
+ })
+ .catch(()=>status.textContent="Gagal mendapatkan data. Semak URL API dan sambungan server.");
+}
+changeTF();
+</script>
+<script src="https://s3.tradingview.com/tv.js"></script>
+</body>
+</html>
