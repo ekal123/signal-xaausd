@@ -22,41 +22,53 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
       const data = req.body || {};
 
-      const response = await fetch(`${REDIS_URL}/set/latest`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${REDIS_TOKEN}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
+      const response = await fetch(
+        `${REDIS_URL}/set/latest`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${REDIS_TOKEN}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Gagal menyimpan data");
+        throw new Error("Gagal menyimpan data Redis");
       }
 
       return res.status(200).json({
         success: true,
-        message: "Analysis berjaya disimpan",
-        data
+        message: "Data berjaya disimpan",
+        data: data
       });
     }
 
     if (req.method === "GET") {
-      const response = await fetch(`${REDIS_URL}/get/latest`, {
-        headers: {
-          Authorization: `Bearer ${REDIS_TOKEN}`
+      const response = await fetch(
+        `${REDIS_URL}/get/latest`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${REDIS_TOKEN}`
+          }
         }
-      });
+      );
 
       if (!response.ok) {
-        throw new Error("Gagal membaca data");
+        throw new Error("Gagal membaca data Redis");
       }
 
       const result = await response.json();
-      const data = result.result
-        ? JSON.parse(result.result)
-        : null;
+
+      let data = null;
+
+      if (result.result) {
+        data = typeof result.result === "string"
+          ? JSON.parse(result.result)
+          : result.result;
+      }
 
       return res.status(200).json(
         data || {
