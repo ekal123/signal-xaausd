@@ -1,116 +1,270 @@
+
 <!DOCTYPE html>
 <html lang="ms">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
 <title>AI XAUUSD Analysis</title>
 
 <style>
+:root {
+  --bg: #080d18;
+  --panel: #111a2b;
+  --panel2: #0c1423;
+  --border: #26364d;
+  --text: #f4f7ff;
+  --muted: #91a1b9;
+  --cyan: #56e6ff;
+  --green: #35e6a0;
+  --red: #ff637b;
+  --yellow: #ffd166;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  padding: 16px;
-  background: #080b12;
-  color: white;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 50% 0%, #12263b 0%, transparent 42%),
+    var(--bg);
+  color: var(--text);
   font-family: Arial, sans-serif;
 }
 
 .container {
-  max-width: 950px;
+  width: 100%;
+  max-width: 1050px;
   margin: auto;
 }
 
-h1 {
+header {
   text-align: center;
-  color: #56e6ff;
+  padding: 18px 8px 25px;
+}
+
+.logo {
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 4px;
+}
+
+h1 {
+  margin: 10px 0 7px;
+  font-size: clamp(23px, 5vw, 34px);
   letter-spacing: 2px;
 }
 
-.card {
-  background: #111827;
-  border: 1px solid #26364a;
-  border-radius: 14px;
-  padding: 18px;
-  margin: 15px 0;
-}
-
-.label {
-  color: #9caec5;
+.subtitle {
+  color: var(--muted);
   font-size: 13px;
 }
 
-.value {
-  font-size: 23px;
-  font-weight: bold;
-  margin-top: 9px;
-  overflow-wrap: anywhere;
+.card {
+  background: linear-gradient(145deg, #141f32, #0e1727);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 19px;
+  margin-bottom: 17px;
+  box-shadow: 0 10px 30px #0003;
 }
 
-.green { color: #39e69a; }
-.red { color: #ff647c; }
-.blue { color: #56e6ff; }
-.yellow { color: #ffd166; }
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 17px;
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 17px;
+  font-size: 15px;
+  letter-spacing: 1px;
 }
 
-select, input, button {
+.tag {
+  font-size: 10px;
+  color: var(--cyan);
+  border: 1px solid #24566b;
+  background: #0b2636;
+  padding: 5px 9px;
+  border-radius: 20px;
+}
+
+.label {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: 9px;
+}
+
+select,
+input {
   width: 100%;
+  min-width: 0;
   padding: 13px;
-  margin-top: 9px;
-  border-radius: 8px;
-  border: 1px solid #34445c;
-  background: #0b1220;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  outline: none;
+  background: var(--panel2);
   color: white;
   font-size: 14px;
 }
 
-button {
-  background: #087e9e;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:active {
-  opacity: .7;
+select:focus,
+input:focus {
+  border-color: var(--cyan);
 }
 
 #chart {
   width: 100%;
   height: 480px;
+  margin-top: 15px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #080d18;
+}
+
+.signal-box {
+  padding: 20px;
+  text-align: center;
+  background: #0b1423;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  margin-bottom: 16px;
+}
+
+.signal-value {
+  font-size: clamp(28px, 7vw, 40px);
+  font-weight: 800;
+  margin-top: 9px;
+  overflow-wrap: anywhere;
+}
+
+.signal-wait { color: var(--yellow); }
+.signal-buy { color: var(--green); }
+.signal-sell { color: var(--red); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric {
+  padding: 16px;
+  background: #0b1423;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-width: 0;
+}
+
+.metric-value {
+  font-size: clamp(19px, 4vw, 25px);
+  font-weight: bold;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+
+.cyan { color: var(--cyan); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+.yellow { color: var(--yellow); }
+
+.progress {
+  width: 100%;
+  height: 6px;
+  background: #263247;
+  border-radius: 10px;
   margin-top: 12px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: 10px;
+  transition: width .4s ease;
+}
+
+.api-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 11px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(90deg, #087e9e, #13a6c3);
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #1b2a40;
+  border: 1px solid var(--border);
+}
+
+button:active {
+  opacity: .75;
 }
 
 .status {
-  padding: 11px;
-  border-radius: 8px;
-  background: #0b1220;
-  color: #9caec5;
-  font-size: 13px;
+  padding: 13px;
+  margin-top: 14px;
+  background: #0b1423;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--yellow);
+  font-size: 12px;
   overflow-wrap: anywhere;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .footer {
   text-align: center;
-  color: #718096;
-  font-size: 12px;
-  padding: 15px;
+  color: #708098;
+  font-size: 11px;
+  line-height: 1.8;
+  padding: 18px 5px;
 }
 
-@media(max-width:550px) {
-  .grid {
-    grid-template-columns: 1fr;
+@media (max-width: 550px) {
+  body {
+    padding: 12px;
+  }
+
+  .card {
+    padding: 15px;
   }
 
   #chart {
-    height: 400px;
+    height: 390px;
+  }
+
+  .grid {
+    gap: 9px;
+  }
+
+  .metric {
+    padding: 13px;
   }
 }
 </style>
@@ -120,13 +274,20 @@ button:active {
 
 <div class="container">
 
-<h1>AI XAUUSD ANALYSIS</h1>
+<header>
+  <div class="logo">INTELLIGENT MARKET SYSTEM</div>
+  <h1>AI XAUUSD ANALYSIS</h1>
+  <div class="subtitle">TradingView Data Interface</div>
+</header>
 
-<!-- CHART -->
-<div class="card">
-  <h3>TRADINGVIEW CHART</h3>
+<!-- TRADINGVIEW -->
+<section class="card">
+  <div class="card-title">
+    <span>TRADINGVIEW CHART</span>
+    <span class="tag">XAUUSD</span>
+  </div>
 
-  <div class="label">PILIH TIMEFRAME</div>
+  <label class="label" for="tf">PILIH TIMEFRAME</label>
 
   <select id="tf">
     <option value="1">M1</option>
@@ -141,53 +302,77 @@ button:active {
   </select>
 
   <div id="chart"></div>
-</div>
+</section>
 
-<!-- AI SIGNAL -->
-<div class="card">
-  <h3>AI SIGNAL</h3>
+<!-- ANALYSIS BOARD -->
+<section class="card">
+  <div class="card-title">
+    <span>AI ANALYSIS BOARD</span>
+    <span class="tag">LIVE DATA</span>
+  </div>
+
+  <div class="signal-box">
+    <div class="label">CURRENT MARKET SIGNAL</div>
+    <div class="signal-value signal-wait" id="signal">
+      MENUNGGU DATA
+    </div>
+  </div>
 
   <div class="grid">
 
-    <div>
-      <div class="label">SIGNAL</div>
-      <div class="value blue" id="signal">MENUNGGU DATA</div>
-    </div>
-
-    <div>
+    <div class="metric">
       <div class="label">AI PROBABILITY</div>
-      <div class="value blue" id="prob">--</div>
+      <div class="metric-value cyan" id="prob">--</div>
+      <div class="progress">
+        <div class="progress-fill" id="probBar"
+          style="background:var(--cyan)"></div>
+      </div>
     </div>
 
-    <div>
+    <div class="metric">
       <div class="label">BULLISH WIN RATE</div>
-      <div class="value green" id="bull">--</div>
+      <div class="metric-value green" id="bull">--</div>
+      <div class="progress">
+        <div class="progress-fill" id="bullBar"
+          style="background:var(--green)"></div>
+      </div>
     </div>
 
-    <div>
+    <div class="metric">
       <div class="label">BEARISH WIN RATE</div>
-      <div class="value red" id="bear">--</div>
+      <div class="metric-value red" id="bear">--</div>
+      <div class="progress">
+        <div class="progress-fill" id="bearBar"
+          style="background:var(--red)"></div>
+      </div>
     </div>
 
-    <div>
+    <div class="metric">
       <div class="label">SYMBOL</div>
-      <div class="value blue" id="symbol">--</div>
+      <div class="metric-value cyan" id="symbol">--</div>
     </div>
 
-    <div>
+    <div class="metric">
       <div class="label">AI TIMEFRAME</div>
-      <div class="value blue" id="aiTf">--</div>
+      <div class="metric-value cyan" id="aiTf">--</div>
+    </div>
+
+    <div class="metric">
+      <div class="label">LAST UPDATE</div>
+      <div class="metric-value cyan" id="lastUpdate">--</div>
     </div>
 
   </div>
-</div>
+</section>
 
 <!-- API CONNECTION -->
-<div class="card">
+<section class="card">
+  <div class="card-title">
+    <span>API CONNECTION</span>
+    <span class="tag">VERCEL</span>
+  </div>
 
-  <h3>API CONNECTION</h3>
-
-  <div class="label">VERCEL API URL</div>
+  <label class="label" for="api">VERCEL API URL</label>
 
   <input
     type="url"
@@ -196,48 +381,62 @@ button:active {
     placeholder="Masukkan URL API"
   >
 
-  <button onclick="connectAPI()">
-    SAMBUNGKAN API
+  <button id="connectBtn" onclick="connectAPI()">
+    CONNECT API
   </button>
 
-  <button onclick="loadAI()">
-    REFRESH ANALISIS
+  <button class="secondary" onclick="loadAI()">
+    REFRESH ANALYSIS
   </button>
 
-  <p class="status" id="status">
+  <div class="status" id="status">
+    <span class="status-dot"></span>
     Belum disambungkan.
-  </p>
+  </div>
 
-  <p class="label">
-    Data akan diperiksa secara automatik setiap 5 saat selepas sambungan.
-  </p>
+  <div class="api-info">
+    <div>
+      <div class="label">CONNECTION</div>
+      <div class="metric-value yellow" id="connection">OFFLINE</div>
+    </div>
+    <div>
+      <div class="label">AUTO REFRESH</div>
+      <div class="metric-value cyan">5 SECONDS</div>
+    </div>
+  </div>
+</section>
 
-</div>
-
-<div class="footer">
+<footer class="footer">
   AI XAUUSD ANALYSIS SYSTEM
   <br>
   TradingView Data Interface
-</div>
+  <br>
+  Educational dashboard — not financial advice.
+</footer>
 
 </div>
 
-<!-- TRADINGVIEW SCRIPT -->
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
+"use strict";
 
 // ==============================
-// TRADINGVIEW CHART
+// TRADINGVIEW
 // ==============================
 
 let chartWidget = null;
 
 function changeTF() {
-
   const tf = document.getElementById("tf").value;
+  const chart = document.getElementById("chart");
 
-  document.getElementById("chart").innerHTML = "";
+  chart.innerHTML = "";
+
+  if (!window.TradingView) {
+    chart.textContent = "TradingView gagal dimuatkan.";
+    return;
+  }
 
   chartWidget = new TradingView.widget({
     autosize: true,
@@ -264,18 +463,29 @@ document.getElementById("tf").addEventListener(
 // ==============================
 
 let apiTimer = null;
+let isLoading = false;
+
+function getAPIUrl() {
+  return document.getElementById("api").value.trim();
+}
 
 function connectAPI() {
-
-  const url = document.getElementById("api").value.trim();
+  const url = getAPIUrl();
 
   if (!url) {
     setStatus("Sila masukkan URL API.", "yellow");
     return;
   }
 
-  if (!url.startsWith("https://")) {
-    setStatus("URL API mesti menggunakan HTTPS.", "yellow");
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.protocol !== "https:") {
+      setStatus("URL API mesti menggunakan HTTPS.", "red");
+      return;
+    }
+  } catch {
+    setStatus("URL API tidak sah.", "red");
     return;
   }
 
@@ -284,27 +494,27 @@ function connectAPI() {
   }
 
   loadAI();
-
   apiTimer = setInterval(loadAI, 5000);
 }
 
 // ==============================
-// LOAD AI DATA
+// LOAD API DATA
 // ==============================
 
 async function loadAI() {
+  const url = getAPIUrl();
 
-  const url = document.getElementById("api").value.trim();
+  if (!url || isLoading) return;
 
-  if (!url) return;
-
-  setStatus("Sedang mendapatkan data...", "yellow");
+  isLoading = true;
 
   try {
-
     const response = await fetch(url, {
       method: "GET",
-      cache: "no-store"
+      cache: "no-store",
+      headers: {
+        "Accept": "application/json"
+      }
     });
 
     if (!response.ok) {
@@ -313,80 +523,92 @@ async function loadAI() {
 
     const data = await response.json();
 
-    if (data.success !== true) {
-      throw new Error("API tidak mengembalikan success.");
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("Format data API tidak sah.");
+    }
+
+    if (data.success === false) {
+      throw new Error(data.message || "API melaporkan ralat.");
     }
 
     updateDashboard(data);
 
-    setStatus(
-      "API BERJAYA DISAMBUNG | Data diterima.",
-      "green"
-    );
+    document.getElementById("connection").textContent = "ONLINE";
+    document.getElementById("connection").className =
+      "metric-value green";
+
+    setStatus("API berjaya disambungkan. Data diterima.", "green");
 
   } catch (error) {
+    document.getElementById("connection").textContent = "ERROR";
+    document.getElementById("connection").className =
+      "metric-value red";
 
-    setStatus(
-      "SAMBUNGAN GAGAL: " + error.message,
-      "red"
-    );
+    setStatus("SAMBUNGAN GAGAL: " + error.message, "red");
 
+  } finally {
+    isLoading = false;
   }
 }
 
 // ==============================
-// UPDATE DASHBOARD
+// UPDATE ANALYSIS BOARD
 // ==============================
 
 function updateDashboard(data) {
-
-  const signal = data.signal ?? "MENUNGGU DATA";
+  const signal = String(data.signal || "MENUNGGU DATA").toUpperCase();
 
   const signalElement = document.getElementById("signal");
 
   signalElement.textContent = signal;
+  signalElement.className = "signal-value " +
+    (signal === "BUY" ? "signal-buy" :
+     signal === "SELL" ? "signal-sell" :
+     "signal-wait");
 
-  signalElement.className = "value " +
-    (
-      signal === "BUY" ? "green" :
-      signal === "SELL" ? "red" :
-      "yellow"
-    );
-
-  document.getElementById("prob").textContent =
-    validNumber(data.probability)
-      ? Number(data.probability).toFixed(2) + "%"
-      : "--";
-
-  document.getElementById("bull").textContent =
-    validNumber(data.bull_win_rate)
-      ? Number(data.bull_win_rate).toFixed(2) + "%"
-      : "--";
-
-  document.getElementById("bear").textContent =
-    validNumber(data.bear_win_rate)
-      ? Number(data.bear_win_rate).toFixed(2) + "%"
-      : "--";
+  updateMetric("prob", "probBar", data.probability);
+  updateMetric("bull", "bullBar", data.bull_win_rate);
+  updateMetric("bear", "bearBar", data.bear_win_rate);
 
   document.getElementById("symbol").textContent =
-    data.symbol ?? "--";
+    data.symbol || "--";
 
   document.getElementById("aiTf").textContent =
-    data.timeframe ?? "--";
+    data.timeframe || "--";
 
+  document.getElementById("lastUpdate").textContent =
+    new Date().toLocaleTimeString("ms-MY", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
 }
 
 // ==============================
-// VALIDATE NUMBER
+// UPDATE METRICS
 // ==============================
 
-function validNumber(value) {
+function updateMetric(elementId, barId, value) {
+  const element = document.getElementById(elementId);
+  const bar = document.getElementById(barId);
 
-  return value !== null &&
-         value !== undefined &&
-         value !== "" &&
-         Number.isFinite(Number(value));
+  if (
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    !Number.isFinite(Number(value))
+  ) {
+    element.textContent = "--";
+    bar.style.width = "0%";
+    return;
+  }
 
+  const number = Number(value);
+
+  element.textContent = number.toFixed(2) + "%";
+
+  const safeNumber = Math.min(100, Math.max(0, number));
+  bar.style.width = safeNumber + "%";
 }
 
 // ==============================
@@ -394,20 +616,26 @@ function validNumber(value) {
 // ==============================
 
 function setStatus(message, color) {
-
   const status = document.getElementById("status");
 
-  status.textContent = message;
+  status.innerHTML = "";
+
+  const dot = document.createElement("span");
+  dot.className = "status-dot";
+
+  const text = document.createTextNode(message);
+
+  status.appendChild(dot);
+  status.appendChild(text);
 
   status.style.color =
-    color === "green" ? "#39e69a" :
-    color === "red" ? "#ff647c" :
-    "#ffd166";
-
+    color === "green" ? "var(--green)" :
+    color === "red" ? "var(--red)" :
+    "var(--yellow)";
 }
 
 // ==============================
-// START
+// START SYSTEM
 // ==============================
 
 changeTF();
